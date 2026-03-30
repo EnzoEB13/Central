@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.post("/auth/login", async (req, res) => {
   const { username, password } = req.body || {};
-  if (!username || !password) return res.status(400).json({ ok: false, error: "Missing credentials" });
+  if (!username || !password) return res.status(400).json({ ok: false, error: "Completa usuario y contraseña" });
 
   const [rows] = await pool.query(
     `SELECT id, username, password_hash AS hash, role, is_active AS isActive
@@ -16,10 +16,10 @@ router.post("/auth/login", async (req, res) => {
     [username]
   );
 
-  if (!rows.length || !rows[0].isActive) return res.status(401).json({ ok: false, error: "Invalid login" });
+  if (!rows.length || !rows[0].isActive) return res.status(401).json({ ok: false, error: "Usuario o contraseña incorrectos" });
 
   const ok = await bcrypt.compare(password, rows[0].hash);
-  if (!ok) return res.status(401).json({ ok: false, error: "Invalid login" });
+  if (!ok) return res.status(401).json({ ok: false, error: "Usuario o contraseña incorrectos" });
 
   const token = jwt.sign(
     { uid: rows[0].id, username: rows[0].username, role: rows[0].role },
@@ -33,7 +33,7 @@ router.post("/auth/login", async (req, res) => {
 // Crear usuarios del panel (solo admin)
 router.post("/auth/users", requireJWT, requireRole("admin"), async (req, res) => {
   const { username, password, role = "rrhh" } = req.body || {};
-  if (!username || !password) return res.status(400).json({ ok: false, error: "Missing username/password" });
+  if (!username || !password) return res.status(400).json({ ok: false, error: "Completa usuario y contraseña" });
 
   const hash = await bcrypt.hash(password, 10);
   await pool.query(
