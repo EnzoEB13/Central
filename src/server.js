@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const cors = require("cors");
 
 const authRoutes = require("./routes.auth");
 const adminRoutes = require("./routes.admin");
@@ -8,6 +9,16 @@ const reportRoutes = require("./routes.reports");
 const syncRoutes = require("./routes.sync");
 
 const app = express();
+
+// ✅ CORS
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173"
+  ],
+  credentials: false,
+}));
+
 app.use(express.json({ limit: "10mb" }));
 
 app.get("/health", (req, res) => res.json({ ok: true }));
