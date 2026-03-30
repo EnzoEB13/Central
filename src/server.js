@@ -7,6 +7,7 @@ const adminRoutes = require("./routes.admin");
 const readRoutes = require("./routes.read");
 const reportRoutes = require("./routes.reports");
 const syncRoutes = require("./routes.sync");
+const calendarRoutes = require("./routes.calendar");
 
 const app = express();
 
@@ -35,12 +36,13 @@ app.use("/api/sync", syncRoutes);
 app.use("/api", authRoutes);
 
 // ===============================
-// 3️⃣ ADMIN + READ + REPORTS
+// 3️⃣ ADMIN + READ + REPORTS + CALENDAR
 // ❗ JWT REQUERIDO
 // ===============================
 app.use("/api", adminRoutes);
 app.use("/api", readRoutes);
 app.use("/api", reportRoutes);
+app.use("/api", calendarRoutes);
 
 const port = process.env.PORT || 3000;
 app.listen(port, () =>
